@@ -64,7 +64,7 @@ class TestBooksCollector:
         name, invalid_genre = self.test_books[5]
         collector.add_new_book(name)
         collector.set_book_genre(name, invalid_genre)
-        assert collector.get_book_genre(name) != invalid_genre
+        assert collector.get_book_genre(name) is not invalid_genre
 
     # Тесты для метода get_book_genre
     def test_get_book_genre(self, collector):
@@ -73,6 +73,8 @@ class TestBooksCollector:
         collector.set_book_genre(name, genre)
 
         assert collector.get_book_genre(name) is genre
+
+        assert collector.get_book_genre('fake name') is None
 
     # Тесты для метода get_books_with_specific_genre
 
@@ -110,8 +112,8 @@ class TestBooksCollector:
         assert "Book 2" not in books_for_children
 
     # Тест для метода add_book_in_favorites и delete_book_from_favorites
-    def add_book_in_favorites(self, collector):
-        book_name = self.test_books[0[0]]
+    def test_add_and_delete_book_from_favorites(self, collector):
+        book_name = self.test_books[0][0]
         collector.add_new_book(book_name)
 
         assert len(collector.get_list_of_favorites_books()) == 0

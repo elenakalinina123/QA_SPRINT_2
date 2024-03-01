@@ -1,9 +1,6 @@
 # pyenv
 .python-version
 
-# python
-__pycache__
-
 # pytest
 .pytest_cache
 
