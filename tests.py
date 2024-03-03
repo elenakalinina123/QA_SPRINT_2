@@ -35,12 +35,8 @@ class TestBooksCollector:
 
     test_favorites = ["Book 1", "Book 3"]
 
-    # Фикстура, создающая новый экземпляр BooksCollector перед каждым тестом
-    @pytest.fixture
-    def collector(self):
-        return BooksCollector()
-
     # Тесты для метода add_new_book
+    # book[0] это первый элемент кортежа (название)
     @pytest.mark.parametrize("name", [book[0] for book in test_books])
     def test_add_new_book(self, name, collector):
         collector.add_new_book(name)
@@ -108,24 +104,48 @@ class TestBooksCollector:
         # Проверяем, что в списке книг есть книга для детей
         assert "Book 1" in books_for_children
 
+    # разве так лучше?
+    def test_get_no_adult_books_for_children_genre(self, collector):
+        # Добавляем две книги с жанром "Фантастика"
+        collector.add_new_book("Book 1")
+        collector.set_book_genre("Book 1", "Фантастика")
+
+        # Добавляем одну книгу с жанром "Ужасы"
+        collector.add_new_book("Book 2")
+        collector.set_book_genre("Book 2", "Ужасы")
+
+        # Получаем список книг с жанром "Для детей"
+        books_for_children = collector.get_books_for_children()
+
         # Проверяем, что в списке книг для детей нет книг не для детей
         assert "Book 2" not in books_for_children
 
-    # Тест для метода add_book_in_favorites и delete_book_from_favorites
-    def test_add_and_delete_book_from_favorites(self, collector):
+    # Тест для метода add_book_in_favorites
+    def test_add_book_to_favorites(self, collector):
         book_name = self.test_books[0][0]
         collector.add_new_book(book_name)
 
-        assert len(collector.get_list_of_favorites_books()) == 0
-
         collector.add_book_in_favorites(book_name)
 
         assert len(collector.get_list_of_favorites_books()) == 1
 
+    # Тест для метода add_book_in_favorites повторное добавление
+    def test_add_book_to_favorites_repeated(self, collector):
+        book_name = self.test_books[0][0]
+        collector.add_new_book(book_name)
+
+        collector.add_book_in_favorites(book_name)
         collector.add_book_in_favorites(book_name)
 
         assert len(collector.get_list_of_favorites_books()) == 1
 
+    # Тест для метода delete_book_from_favorites
+
+    def test_delete_book_from_favorites(self, collector):
+        book_name = self.test_books[0][0]
+        collector.add_new_book(book_name)
+
+        collector.add_book_in_favorites(book_name)
         collector.delete_book_from_favorites(book_name)
 
         assert len(collector.get_list_of_favorites_books()) == 0
